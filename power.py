@@ -1,8 +1,6 @@
 import numpy as np
 import math
 
-
-
 # i is number of iterations
 # A is starting Matrix
 def power(A,iterations):
