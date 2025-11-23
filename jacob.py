@@ -11,7 +11,7 @@ def norm(x):
     return Decimal(item).sqrt()
 
 def jacobi(A,b):
-    k = 0
+    k = 1
     x = np.array([0,0,0,0])
     print("Current X")
     print(x)
@@ -30,12 +30,10 @@ def jacobi(A,b):
         print(x)
         print("Error:")
         print(norm(b - np.matmul(A,x)))
-    print(x)
-    print("Error:")
-    print(norm(b - np.matmul(A,x)))
     return x
+
 def gauss_seidel(A,b):
-    k = 0
+    k = 1
     x = np.array([0,0,0,0])
     print("Current X")
     print(x)
@@ -48,10 +46,24 @@ def gauss_seidel(A,b):
             x[i] = (b[i] - sig) / A[i,i]
         print("Iteration:",k)
         print("X:", x)
-        k+=1
         print("Error: ",norm(b - np.matmul(A,x)))
-    print("Iteration:", k)
-    print("X:",x)
+        k+=1
+    return x
+
+def sor(A,b,w):
+    x = np.array([0,0,0,0])
+    k = 1
+    while norm(b - np.matmul(A,x)) > 10 ** -6:
+        print("Iteration: ", k)
+        for i in range(4):
+            sig = 0
+            for j in range(4):
+                if i != j:
+                    sig += A[i,j]* x[j]
+            x[i] = (1 - w)*x[i] + w*(b[i] - sig)/ A[i,i]
+        print("X:", x)
+        print("Error: ",norm(b - np.matmul(A,x)))
+        k+=1
     return x
 
 if __name__ == "__main__":
@@ -60,7 +72,13 @@ if __name__ == "__main__":
                   [1,2,7,2],
                   [1,1,2,8]])
     b = np.array([29,31,26,19])
+    # Correct answer is [4,3,2,1]
+    print("----------------------------")
     print("Jacobis")
     jacobi(A,b)
+    print("----------------------------")
     print("Gauss Seidel")
     gauss_seidel(A,b)
+    print("----------------------------")
+    print("SOR Method")
+    sor(A,b,1.1)
